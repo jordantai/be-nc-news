@@ -130,4 +130,120 @@ describe("makeRefObj", () => {
   });
 });
 
-describe("formatComments", () => {});
+describe("formatComments", () => {
+  test("returns a new empty array, when passed an empty array", () => {
+    const comments = [];
+    const articleLookup = {};
+    const actual = formatComments(comments, articleLookup);
+    const expected = [];
+    expect(actual).toEqual(expected);
+    expect(actual).not.toBe(comments);
+  });
+  test("returned array has different reference to original array", () => {
+    const input = [{}];
+    expect(formatComments(input)).not.toBe(input);
+  });
+  test("objects in array have different reference to original objects", () => {
+    const input = [{}];
+    expect(formatComments(input)[0]).not.toBe(input[0]);
+  });
+  test("takes a comment object and a reference object and replaces the belongs_to key and value with article_id ", () => {
+    const comments = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        belongs_to: "They're not exactly dogs, are they?",
+        created_by: "butter_bridge",
+        votes: 16,
+        created_at: 1511354163389,
+      },
+    ];
+    const articleRef = {
+      "They're not exactly dogs, are they?": 1,
+    };
+    const keyToChange = "belongs_to";
+    const keyToCreate = "article_id";
+    expect(
+      formatComments(comments, articleRef, keyToChange, keyToCreate)
+    ).toEqual([
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        article_id: 1,
+        author: "butter_bridge",
+        votes: 16,
+        created_at: 1511354163389,
+      },
+    ]);
+  });
+  test("works for mulitple objects in array", () => {
+    const comments = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        belongs_to: "They're not exactly dogs, are they?",
+        created_by: "butter_bridge",
+        votes: 16,
+        created_at: 1511354163389,
+      },
+      {
+        body: " I carry a log — yes. Is it funny to you? It is not to me.",
+        belongs_to: "Living in the shadow of a great man",
+        created_by: "icellusedkars",
+        votes: -100,
+        created_at: 1416746163389,
+      },
+    ];
+    const articleRef = {
+      "They're not exactly dogs, are they?": 1,
+      "Living in the shadow of a great man": 2,
+    };
+    const keyToChange = "belongs_to";
+    const keyToCreate = "article_id";
+    expect(
+      formatComments(comments, articleRef, keyToChange, keyToCreate)
+    ).toEqual([
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        article_id: 1,
+        author: "butter_bridge",
+        votes: 16,
+        created_at: 1511354163389,
+      },
+      {
+        body: " I carry a log — yes. Is it funny to you? It is not to me.",
+        article_id: 2,
+        author: "icellusedkars",
+        votes: -100,
+        created_at: 1416746163389,
+      },
+    ]);
+  });
+  test("converts the created_at UNIX timestamp into a JS date object using formatDates function", () => {
+    const comments = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        article_id: 1,
+        author: "butter_bridge",
+        votes: 16,
+        created_at: 1511354163389,
+      },
+    ];
+    const timestamp = new Date(comments[0]["created_at"]);
+    const formattedTimestamp = timestamp.toLocaleString("en-GB", {
+      hour12: false,
+    });
+    expect(formatDates(comments)).toEqual([
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        article_id: 1,
+        author: "butter_bridge",
+        votes: 16,
+        created_at: formattedTimestamp,
+      },
+    ]);
+  });
+});

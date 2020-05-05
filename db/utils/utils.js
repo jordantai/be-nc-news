@@ -20,4 +20,20 @@ exports.makeRefObj = (list, key, value) => {
   return refObj;
 };
 
-exports.formatComments = (comments, articleRef) => {};
+exports.formatComments = (comments, articleRef, keyToChange, keyToCreate) => {
+  const newComments = comments.map((comment) => {
+    if (articleRef) {
+      const {
+        created_by: authorValue,
+        [keyToChange]: key,
+        ...restOfKeys
+      } = comment;
+      return {
+        author: authorValue,
+        [keyToCreate]: articleRef[key],
+        ...restOfKeys,
+      };
+    }
+  });
+  return newComments;
+};
