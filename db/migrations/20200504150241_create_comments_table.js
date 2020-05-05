@@ -5,8 +5,8 @@ exports.up = function (knex) {
     commentsTable.string("author").references("users.username");
     commentsTable.integer("article_id").references("articles.article_id");
     commentsTable.integer("votes").defaultTo(0);
-    commentsTable.timestamp("create_at", { useTz: true });
-    commentsTable.text("comments").notNullable();
+    commentsTable.timestamp("created_at", { useTz: true });
+    commentsTable.text("body").notNullable();
   });
 };
 
