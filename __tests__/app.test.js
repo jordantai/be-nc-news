@@ -20,6 +20,18 @@ describe("app", () => {
               expect(body.topics.length).toBe(3);
             });
         });
+        test("status 200: each topic has keys from topics table", () => {
+          return request(app)
+            .get("/api/topics")
+            .expect(200)
+            .then(({ body }) => {
+              body.topics.forEach((topic) => {
+                expect(Object.keys(topic)).toEqual(
+                  expect.arrayContaining(["description", "slug"])
+                );
+              });
+            });
+        });
       });
     });
   });
