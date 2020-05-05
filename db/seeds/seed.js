@@ -13,7 +13,6 @@ exports.seed = function (knex) {
 
   return Promise.all([topicsInsertions, usersInsertions])
     .then(() => {
-      return knex.insert(articleData).into("articles").returning("*");
       /* 
       
       comments.belongs_to = article.title needs to be article_id
@@ -26,6 +25,8 @@ exports.seed = function (knex) {
 
       Your comment insertions will depend on information from the seeded articles, so make sure to return the data after it's been seeded.
       */
+      const formattedDates = formatDates(articleData);
+      return knex("articles").insert(formattedDates).returning("*");
     })
     .then((articleRows) => {
       /* 

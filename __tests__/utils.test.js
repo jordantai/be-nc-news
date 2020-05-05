@@ -25,6 +25,32 @@ describe("formatDates", () => {
     });
     expect(formatDates(input)).toEqual([{ created_at: formattedTimestamp }]);
   });
+  test("takes an array with multiple objects and only formats the object with a timestamp, the rest of the objects are left the same", () => {
+    const input = [
+      {
+        title: "Living in the shadow of a great man",
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "I find this existence challenging",
+        created_at: 1542284514171,
+        votes: 100,
+      },
+    ];
+    const timestamp = new Date(input[0]["created_at"]);
+    const formattedTimestamp = timestamp.toLocaleString("en-GB", {
+      hour12: false,
+    });
+    expect(formatDates(input)).toEqual([
+      {
+        title: "Living in the shadow of a great man",
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "I find this existence challenging",
+        created_at: formattedTimestamp,
+        votes: 100,
+      },
+    ]);
+  });
   test("does not mutate original aray", () => {
     const input = [{ created_at: 1471522072389 }];
     formatDates(input);
