@@ -28,6 +28,7 @@ describe("formatDates", () => {
   test("takes an array with multiple objects and only formats the object with a timestamp, the rest of the objects are left the same", () => {
     const input = [
       {
+        article_id: 1,
         title: "Living in the shadow of a great man",
         topic: "mitch",
         author: "butter_bridge",
@@ -42,6 +43,7 @@ describe("formatDates", () => {
     });
     expect(formatDates(input)).toEqual([
       {
+        article_id: 1,
         title: "Living in the shadow of a great man",
         topic: "mitch",
         author: "butter_bridge",
