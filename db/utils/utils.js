@@ -9,12 +9,15 @@ exports.formatDates = (list) => {
       return {};
     }
   });
-
   return formattedDate;
 };
 
-exports.makeRefObj = (list) => {
-  return {};
+exports.makeRefObj = (list, key, value) => {
+  const refObj = {};
+  list.forEach((article) => {
+    refObj[article[key]] = article[value];
+  });
+  return refObj;
 };
 
 exports.formatComments = (comments, articleRef) => {};

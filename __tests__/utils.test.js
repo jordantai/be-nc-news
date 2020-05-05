@@ -74,6 +74,60 @@ describe("makeRefObj", () => {
     // this check the input was not affected by the function and still looks the same
     expect(makeRefObj(input)).toEqual({});
   });
+  test("takes an array of article objects and returns a reference object with the key as 'title' and value as the 'article_id'", () => {
+    const input = [
+      [
+        {
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+        },
+      ],
+      "title",
+      "article_id",
+    ];
+    expect(makeRefObj(...input)).toEqual({
+      "Living in the shadow of a great man": 1,
+    });
+  });
+  test("works for multiple objects in array", () => {
+    const input = [
+      [
+        {
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+        },
+        {
+          article_id: 2,
+          title: "Eight pug gifs that remind me of mitch",
+        },
+      ],
+      "title",
+      "article_id",
+    ];
+    expect(makeRefObj(...input)).toEqual({
+      "Living in the shadow of a great man": 1,
+      "Eight pug gifs that remind me of mitch": 2,
+    });
+  });
+  test("does not mutate original array", () => {
+    const input = [
+      [
+        {
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+        },
+      ],
+      "title",
+      "article_id",
+    ];
+    makeRefObj(...input);
+    expect(input[0]).toEqual([
+      {
+        article_id: 1,
+        title: "Living in the shadow of a great man",
+      },
+    ]);
+  });
 });
 
 describe("formatComments", () => {});
