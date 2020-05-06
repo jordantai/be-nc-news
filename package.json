@@ -11,9 +11,8 @@
     "migrate-dev": "npm run setup-dbs && knex migrate:latest",
     "migrate-test": "npm run setup-dbs && NODE_ENV=test knex migrate:latest",
     "migrate-all": "npm run setup-dbs && knex migrate:latest &&NODE_ENV=test knex migrate:latest",
-    "seed-all": "knex seed:run && NODE_ENV=test knex seed:run",
-    "seed-dev": "knex seed:run",
     "seed-test": "NODE_ENV=test knex seed:run",
+    "seed-dev": "knex seed:run",
     "test": "jest --watch"
   },
   "repository": {
@@ -34,6 +33,12 @@
   },
   "devDependencies": {
     "jest": "^25.5.4",
+    "jest-sorted": "^1.0.6",
     "supertest": "^4.0.2"
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "jest-sorted"
+    ]
   }
 }

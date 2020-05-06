@@ -18,10 +18,6 @@ exports.seed = function (knex) {
       return Promise.all([topicsInsertions, usersInsertions]);
     })
     .then(() => {
-      /* 
-      comments.belongs_to = article.title needs to be article_id
-      comments.created_by = author(users.username)
-      */
       const formattedDates = formatDates(articleData);
       return knex("articles").insert(formattedDates).returning("*");
     })
