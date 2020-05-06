@@ -48,6 +48,18 @@ describe("app", () => {
               expect(body.topics).toBeSortedBy("slug");
             });
         });
+        test("Invalid methods", () => {
+          const invalidMethods = ["patch", "post", "delete"];
+          const requests = invalidMethods.map((method) => {
+            return request(app)
+              [method]("/api/topics")
+              .expect(405)
+              .then(({ body }) => {
+                expect(body.msg).toBe("Method not allowed");
+              });
+          });
+          return Promise.all(requests);
+        });
       });
     });
     describe("/users/:username", () => {
