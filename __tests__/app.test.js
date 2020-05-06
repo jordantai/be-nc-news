@@ -120,6 +120,16 @@ describe("app", () => {
               expect(body.article.length).toBe(1);
             });
         });
+        test("status: 200 - the articles object has all the column names as keys from the articles table and also a comment_count key", () => {
+          return request(app)
+          .get("/api/articles/1")
+          .expect(200)
+          .then(({ body }) => {
+            expect(Object.keys(body.article[0])).toEqual(
+              expect.arrayContaining(["article_id", "title", "body", "votes", "topic", "author", "created_at", "comment_count"])
+            );
+          });
+        })
       });
     });
   });
