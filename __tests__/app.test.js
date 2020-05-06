@@ -48,7 +48,9 @@ describe("app", () => {
               expect(body.topics).toBeSortedBy("slug");
             });
         });
-        test("Invalid methods", () => {
+      });
+      describe("INVALID METHODS", () => {
+        test("not allowed methods", () => {
           const invalidMethods = ["patch", "post", "delete"];
           const requests = invalidMethods.map((method) => {
             return request(app)
@@ -89,6 +91,33 @@ describe("app", () => {
             .expect(404)
             .then(({ body: { msg } }) => {
               expect(msg).toBe("User not found");
+            });
+        });
+      });
+      describe("INVALID METHODS", () => {
+        test("not allowed methods", () => {
+          const invalidMethods = ["patch", "post", "delete"];
+          const requests = invalidMethods.map((method) => {
+            return request(app)
+              [method]("/api/users")
+              .expect(405)
+              .then(({ body }) => {
+                expect(body.msg).toBe("Method not allowed");
+              });
+          });
+          return Promise.all(requests);
+        });
+      });
+    });
+    describe.only("/articles/:article_id", () => {
+      describe("GET", () => {
+        test("status: 200 - responds with article object based on certain id", () => {
+          return request(app)
+            .get("/api/articles/1")
+            .expect(200)
+            .then(({ body }) => {
+              expect(Array.isArray(body.article)).toBe(true);
+              expect(body.article.length).toBe(1);
             });
         });
       });
