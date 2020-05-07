@@ -156,7 +156,7 @@ describe("app", () => {
             });
         });
       });
-      describe("PATCH", () => {
+      describe.only("PATCH", () => {
         test("status: 200 - updates number of votes", () => {
           return request(app)
             .patch("/api/articles/1")
@@ -173,8 +173,35 @@ describe("app", () => {
             .expect(404)
             .then(({ body }) => {
               expect(body.msg).toBe("Article not found");
-          });
+            });
         });
+        test("status: 400 - article_id is a non integer", () => {
+          return request(app)
+            .patch("/api/articles/nonInt")
+            .send({ inc_votes: 1 })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).toBe("Bad request");
+            });
+        });
+        test("status: 400 - votes increment value is a non integer", () => {
+          return request(app)
+            .patch("/api/articles/1")
+            .send({ inc_votes: "nonInt" })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).toBe("Bad request");
+            });
+        })
+        test("status: 400 - votes increment is missing", () => {
+          return request(app)
+            .patch("/api/articles/1")
+            .send({})
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).toBe("Bad request");
+            });
+        })
       });
     });
   });

@@ -16,6 +16,7 @@ exports.fetchArticleByArticleId = (article_id) => {
 };
 
 exports.updateArticleVotes = (article_id, inc_votes) => {
+  if (!inc_votes) return Promise.reject({ status: 400, msg: "Bad request" });
   return connection("articles")
     .increment("votes", inc_votes)
     .where("article_id", article_id)
