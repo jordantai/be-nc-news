@@ -17,6 +17,18 @@ describe("app", () => {
           expect(msg).toBe("Resource not found");
         });
     });
+    test("not allowed methods", () => {
+      const invalidMethods = ["delete"];
+      const requests = invalidMethods.map((method) => {
+        return request(app)
+          [method]("/api")
+          .expect(405)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Method not allowed");
+          });
+      });
+      return Promise.all(requests);
+    });
     describe("/topics", () => {
       describe("GET", () => {
         test("status: 200 - responds with array of topic objects", () => {
