@@ -166,6 +166,15 @@ describe("app", () => {
               expect(body.article.votes).toBe(101);
             });
         });
+        test("status: 404 - non-existent article_id", () => {
+          return request(app)
+            .patch("/api/articles/10000")
+            .send({ inc_votes: 1 })
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).toBe("Article not found");
+          });
+        });
       });
     });
   });

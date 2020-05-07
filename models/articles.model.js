@@ -8,10 +8,10 @@ exports.fetchArticleByArticleId = (article_id) => {
     .join("comments", "articles.article_id", "=", "comments.article_id")
     .where("articles.article_id", article_id)
     .groupBy("articles.article_id")
-    .then((rows) => {
-      if (rows.length === 0)
+    .then((article) => {
+      if (article.length === 0)
         return Promise.reject({ status: 404, msg: "Article not found" });
-      return rows;
+      return article;
     });
 };
 
@@ -20,7 +20,9 @@ exports.updateArticleVotes = (article_id, inc_votes) => {
     .increment("votes", inc_votes)
     .where("article_id", article_id)
     .returning("*")
-    .then((articles) => {
-      return articles[0];
+    .then((article) => {
+      if (article.length === 0)
+        return Promise.reject({ status: 404, msg: "Article not found" });
+      return article[0];
     });
 };
