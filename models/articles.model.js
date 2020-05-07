@@ -11,7 +11,7 @@ exports.fetchArticleByArticleId = (article_id) => {
     .then((article) => {
       if (article.length === 0)
         return Promise.reject({ status: 404, msg: "Article not found" });
-      return article;
+      return article[0];
     });
 };
 
@@ -27,3 +27,15 @@ exports.updateArticleVotes = (article_id, inc_votes) => {
       return article[0];
     });
 };
+
+exports.addCommentByArticleId = (username, body, article_id) => {
+  const date = new Date();
+  return connection("comments")
+    .insert({ author: username, body, article_id, created_at: date })
+    .returning("*")
+    .then((comment) => {
+      return comment[0];
+    });
+};
+
+exports.fetchCommentsByArticleId = () => {};
