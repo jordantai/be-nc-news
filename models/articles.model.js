@@ -10,7 +10,17 @@ exports.fetchArticleByArticleId = (article_id) => {
     .groupBy("articles.article_id")
     .then((rows) => {
       if (rows.length === 0)
-        return Promise.reject({ status: 404, msg: "User not found" });
+        return Promise.reject({ status: 404, msg: "Article not found" });
       return rows;
+    });
+};
+
+exports.updateArticleVotes = (article_id, inc_votes) => {
+  return connection("articles")
+    .increment("votes", inc_votes)
+    .where("article_id", article_id)
+    .returning("*")
+    .then((articles) => {
+      return articles[0];
     });
 };

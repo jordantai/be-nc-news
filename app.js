@@ -6,7 +6,6 @@ const {
   handleCustomErrors,
   handleInternalErrors,
   send404,
-  handle405s,
 } = require("./errors");
 
 app.use(express.json());

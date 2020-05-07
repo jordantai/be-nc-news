@@ -1,6 +1,7 @@
-You are now connected to database "nc_news" as user "jordan".
- article_id |       title        |                                                                                                            body                                                                                                            | votes | topic  |  author   |       created_at       | comment_count 
-------------+--------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------+--------+-----------+------------------------+---------------
-          1 | Running a Node App | This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment. |     0 | coding | jessjelly | 2016-08-18 13:07:52+01 |             8
+You are now connected to database "nc_news_test" as user "jordan".
+UPDATE 1
+ article_id |                title                |               body                | votes | topic |    author     |       created_at       | comment_count 
+------------+-------------------------------------+-----------------------------------+-------+-------+---------------+------------------------+---------------
+          1 | Living in the shadow of a great man | I find this existence challenging |   103 | mitch | butter_bridge | 2018-11-15 12:21:54+00 |            13
 (1 row)
 

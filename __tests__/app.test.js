@@ -96,7 +96,7 @@ describe("app", () => {
       });
       describe("INVALID METHODS", () => {
         test("not allowed methods", () => {
-          const invalidMethods = ["patch", "post", "delete"];
+          const invalidMethods = ["patch", "post", "put", "delete"];
           const requests = invalidMethods.map((method) => {
             return request(app)
               [method]("/api/users")
@@ -109,7 +109,7 @@ describe("app", () => {
         });
       });
     });
-    describe.only("/articles/:article_id", () => {
+    describe("/articles/:article_id", () => {
       describe("GET", () => {
         test("status: 200 - responds with article object based on certain id", () => {
           return request(app)
@@ -122,14 +122,50 @@ describe("app", () => {
         });
         test("status: 200 - the articles object has all the column names as keys from the articles table and also a comment_count key", () => {
           return request(app)
-          .get("/api/articles/1")
-          .expect(200)
-          .then(({ body }) => {
-            expect(Object.keys(body.article[0])).toEqual(
-              expect.arrayContaining(["article_id", "title", "body", "votes", "topic", "author", "created_at", "comment_count"])
-            );
-          });
-        })
+            .get("/api/articles/1")
+            .expect(200)
+            .then(({ body }) => {
+              expect(Object.keys(body.article[0])).toEqual(
+                expect.arrayContaining([
+                  "article_id",
+                  "title",
+                  "body",
+                  "votes",
+                  "topic",
+                  "author",
+                  "created_at",
+                  "comment_count",
+                ])
+              );
+            });
+        });
+        test("status: 404 - for non existent article_id", () => {
+          return request(app)
+            .get("/api/articles/1000")
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("Article not found");
+            });
+        });
+        test("status: 400 - invalid article_id", () => {
+          return request(app)
+            .get("/api/articles/notAnInt")
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("Bad request");
+            });
+        });
+      });
+      describe("PATCH", () => {
+        test("status: 200 - updates number of votes", () => {
+          return request(app)
+            .patch("/api/articles/1")
+            .send({ inc_votes: 1 })
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.article.votes).toBe(101);
+            });
+        });
       });
     });
   });
