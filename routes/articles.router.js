@@ -2,9 +2,11 @@ const articlesRouter = require("express").Router();
 const {
   getArticleByArticleId,
   patchArticleById,
-  getCommentsByArticleId,
-  postCommentByArticleId,
 } = require("../controllers/articles.controller");
+const {
+  postCommentByArticleId,
+  getCommentsByArticleId,
+} = require("../controllers/comments.controller");
 const { send405 } = require("../errors");
 
 articlesRouter.route("/").all(send405);

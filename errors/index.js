@@ -1,6 +1,6 @@
 exports.handlePSQLErrors = (err, req, res, next) => {
-  // const codes = { 
-  //   "42703": { status: 400, msg: "Bad request" }, 
+  // const codes = {
+  //   "42703": { status: 400, msg: "Bad request" },
   //   "22P02": {status: 400, msg: "Bad request"},
   // };
 
@@ -11,9 +11,12 @@ exports.handlePSQLErrors = (err, req, res, next) => {
   //   // have to deconstruct msg to make into msg object as otherwise just a string of the message and res.body expects a msg object.
   // } else next(err);
 
-  const badRequestCodes = ['42703', '22P02'];
-  if(badRequestCodes.includes(err.code)) {
-    res.status(400).send({msg: "Bad request"});
+  const badRequestCodes = ["42703", "22P02"];
+  const conflictRequestCodes = ["23503"];
+  if (badRequestCodes.includes(err.code)) {
+    res.status(400).send({ msg: "Bad request" });
+  } else if (conflictRequestCodes.includes(err.code)) {
+    res.status(409).send({ msg: "Conflict" });
   } else {
     next(err);
   }

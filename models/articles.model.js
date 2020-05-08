@@ -27,15 +27,3 @@ exports.updateArticleVotes = (article_id, inc_votes) => {
       return article[0];
     });
 };
-
-exports.addCommentByArticleId = (username, body, article_id) => {
-  const date = new Date();
-  return connection("comments")
-    .insert({ author: username, body, article_id, created_at: date })
-    .returning("*")
-    .then((comment) => {
-      return comment[0];
-    });
-};
-
-exports.fetchCommentsByArticleId = () => {};

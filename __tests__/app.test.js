@@ -237,17 +237,36 @@ describe("app", () => {
               .send({ username: "lurker", body: "Awesome it is" })
               .expect(201)
               .then(({ body }) => {
-                expect(Object.keys(body.comment[0])).toEqual(
+                expect(Object.keys(body.comment)).toEqual(
                   expect.arrayContaining([
                     "article_id",
-                    "title",
+                    "comment_id",
                     "body",
                     "votes",
                     "author",
                     "created_at",
                   ])
                 );
+                expect(body.comment.author).toBe("lurker");
                 expect(body.comment.body).toBe("Awesome it is");
+              });
+          });
+          test("status: 409 - an invalid username", () => {
+            return request(app)
+              .post("/api/articles/1/comments")
+              .send({ username: "invalidUsername", body: "Awesome it is" })
+              .expect(409)
+              .then(({ body }) => {
+                expect(body.msg).toBe("Conflict");
+              });
+          });
+          test("status: 400 - empty body input", () => {
+            return request(app)
+              .post("/api/articles/1/comments")
+              .send({ username: "lurker", body: "" })
+              .expect(400)
+              .then(({ body }) => {
+                expect(body.msg).toBe("Bad request");
               });
           });
         });
@@ -259,6 +278,15 @@ describe("app", () => {
               .then(({ body }) => {
                 expect(Array.isArray(body.comments)).toBe(true);
                 expect(body.comments.length).toBe(13);
+                expect(Object.keys(body.comments[0])).toEqual(
+                  expect.arrayContaining([
+                    "comment_id",
+                    "body",
+                    "votes",
+                    "author",
+                    "created_at",
+                  ])
+                );
               });
           });
         });
