@@ -289,6 +289,58 @@ describe("app", () => {
                 );
               });
           });
+          test("status: 200 - comments are sorted by created_at by default", () => {
+            return request(app)
+              .get("/api/articles/1/comments")
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.comments).toBeSortedBy("created_at", {
+                  descending: true,
+                });
+              });
+          });
+          test("status: 200 - accepts a sort-by query and responds with the file objects sorted by that property", () => {
+            return request(app)
+              .get("/api/articles/1/comments?sort_by=author")
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.comments).toBeSortedBy("author", {
+                  descending: true,
+                });
+              });
+          });
+          test("status: 200 - sort_by query can be ordered ascending or descending. Default is descending", () => {
+            return request(app)
+              .get("/api/articles/1/comments?sort_by=author&&order=asc")
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.comments).toBeSortedBy("author", {
+                  descending: false,
+                });
+              });
+          });
+          test("status: 400 - invalid article_id given", () => {
+            return request(app)
+              .get("/api/articles/invalid_id/comments")
+              .expect(400)
+              .then(({ body }) => {
+                expect(body.msg).toBe("Bad request");
+              });
+          });
+        });
+        describe("INVALID METHODS", () => {
+          test("not allowed methods", () => {
+            const invalidMethods = ["patch", "put", "delete"];
+            const requests = invalidMethods.map((method) => {
+              return request(app)
+                [method]("/api/articles/1/comments")
+                .expect(405)
+                .then(({ body }) => {
+                  expect(body.msg).toBe("Method not allowed");
+                });
+            });
+            return Promise.all(requests);
+          });
         });
       });
     });
