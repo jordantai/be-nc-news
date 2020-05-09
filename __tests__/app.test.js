@@ -344,5 +344,38 @@ describe("app", () => {
         });
       });
     });
+    describe.only("/articles", () => {
+      describe("GET", () => {
+        test("status: 200 - returns an array of article objects", () => {
+          return request(app)
+            .get("/api/articles")
+            .expect(200)
+            .then(({ body }) => {
+              expect(Array.isArray(body.articles)).toBe(true);
+              expect(body.articles.length).toBe(12);
+            });
+        });
+        test("status: 200 - each article object has all the keys from the article table, plus a comment count for the number of comments relating to the specific article_id", () => {
+          return request(app)
+            .get("/api/articles")
+            .expect(200)
+            .then(({body})=> {
+              body.articles.forEach((article) => {
+                expect(Object.keys(article)).toEqual(
+                  expect.arrayContaining(["article_id", "title", "body", "votes", "topic", "author", "created_at", "comment_count"])
+                );
+              });
+          });
+        });
+        test("status: 200 - articles are sorted_by date by default", () => {
+          return request(app)
+            .get("/api/articles")
+            .expect(200)
+            .then(({body}) => {
+              expect(body.articles).toBeSortedBy("created_at");
+            });
+        });
+      });
+    });
   });
 });

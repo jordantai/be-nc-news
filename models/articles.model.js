@@ -27,3 +27,19 @@ exports.updateArticleVotes = (article_id, inc_votes) => {
       return article[0];
     });
 };
+
+exports.fetchArticles = (sort_by = "created_at") => {
+  // need all columns from articles table plus comment count
+  return connection
+    .select("articles.*")
+    .count("comments.article_id", { as: "comment_count" })
+    .from("articles")
+    .leftJoin("comments", "articles.article_id", "=", "comments.article_id")
+    .groupBy("articles.article_id")
+    .orderBy(sort_by)
+    .then((articles) => {
+      // if (article.length === 0)
+      //   return Promise.reject({ status: 404, msg: "Article not found" });
+      return articles;
+    });
+};
