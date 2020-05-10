@@ -372,7 +372,47 @@ describe("app", () => {
             .get("/api/articles")
             .expect(200)
             .then(({body}) => {
-              expect(body.articles).toBeSortedBy("created_at");
+              expect(body.articles).toBeSortedBy("created_at", {descending: true});
+            });
+        });
+        test("status: 200 - articles can be sort_by any valid article key", () => {
+          return request(app)
+            .get("/api/articles?sort_by=comment_count")
+            .expect(200)
+            .then(({body}) => {
+              expect(body.articles).toBeSortedBy("comment_count", {coerce: true, descending: true});
+            });
+        });
+        test("status: 200 - articles can be ordered either asc or desc, default is desc", () => {
+          return request(app)
+            .get("/api/articles?sort_by=votes&&order=asc")
+            .expect(200)
+            .then(({body}) => {
+              expect(body.articles).toBeSortedBy("votes");
+            });
+        });
+        test("status: 200 - articles filtered by author", () => {
+          return request(app)
+            .get("/api/articles?author=rogersop")
+            .expect(200)
+            .then(({body}) => {
+              let author = "";
+              body.articles.forEach((article) => {
+                author = article.author;
+              });
+              expect(author).toBe("rogersop");
+            });
+        });
+        test("status: 200 - articles filtered by topic", () => {
+          return request(app)
+            .get("/api/articles?topic=mitch")
+            .expect(200)
+            .then(({body}) => {
+              let topic = "";
+              body.articles.forEach((article) => {
+                topic = article.topic;
+              });
+              expect(topic).toBe("mitch");
             });
         });
       });

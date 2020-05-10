@@ -28,7 +28,7 @@ exports.updateArticleVotes = (article_id, inc_votes) => {
     });
 };
 
-exports.fetchArticles = (sort_by = "created_at") => {
+exports.fetchArticles = (sort_by = "created_at", order = "desc", author, topic) => {
   // need all columns from articles table plus comment count
   return connection
     .select("articles.*")
@@ -36,7 +36,11 @@ exports.fetchArticles = (sort_by = "created_at") => {
     .from("articles")
     .leftJoin("comments", "articles.article_id", "=", "comments.article_id")
     .groupBy("articles.article_id")
-    .orderBy(sort_by)
+    .orderBy(sort_by, order)
+    .modify((query) => {
+      if(author) query.where("articles.author", author);
+      if(topic) query.where("articles.topic", topic);
+    })
     .then((articles) => {
       // if (article.length === 0)
       //   return Promise.reject({ status: 404, msg: "Article not found" });
