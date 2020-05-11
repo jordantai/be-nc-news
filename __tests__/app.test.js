@@ -514,6 +514,14 @@ describe("app", () => {
         test("status: 204 - removes a comment from the database", () => {
           return request(app).del("/api/comments/1").expect(204);
         });
+        test("status: 400 - comment_id is not a number", () => {
+          return request(app)
+            .del("/api/comments/notAnInt")
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).toBe("Bad request");
+            });
+        });
       });
       describe("INVALID METHODS", () => {
         test("not allowed methods", () => {
