@@ -20,10 +20,7 @@ describe("formatDates", () => {
   test("takes a UNIX timepstamp and returns a formatted  timestamp", () => {
     const input = [{ created_at: 1471522072389 }];
     const timestamp = new Date(input[0]["created_at"]);
-    const formattedTimestamp = timestamp.toLocaleString("en-GB", {
-      hour12: false,
-    });
-    expect(formatDates(input)).toEqual([{ created_at: formattedTimestamp }]);
+    expect(formatDates(input)).toEqual([{ created_at: timestamp }]);
   });
   test("takes an array with multiple objects and only formats the object with a timestamp, the rest of the objects are left the same", () => {
     const input = [
@@ -38,9 +35,6 @@ describe("formatDates", () => {
       },
     ];
     const timestamp = new Date(input[0]["created_at"]);
-    const formattedTimestamp = timestamp.toLocaleString("en-GB", {
-      hour12: false,
-    });
     expect(formatDates(input)).toEqual([
       {
         article_id: 1,
@@ -48,7 +42,7 @@ describe("formatDates", () => {
         topic: "mitch",
         author: "butter_bridge",
         body: "I find this existence challenging",
-        created_at: formattedTimestamp,
+        created_at: timestamp,
         votes: 100,
       },
     ]);
@@ -232,9 +226,6 @@ describe("formatComments", () => {
       },
     ];
     const timestamp = new Date(comments[0]["created_at"]);
-    const formattedTimestamp = timestamp.toLocaleString("en-GB", {
-      hour12: false,
-    });
     expect(formatDates(comments)).toEqual([
       {
         body:
@@ -242,7 +233,7 @@ describe("formatComments", () => {
         article_id: 1,
         author: "butter_bridge",
         votes: 16,
-        created_at: formattedTimestamp,
+        created_at: timestamp,
       },
     ]);
   });

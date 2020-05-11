@@ -251,13 +251,13 @@ describe("app", () => {
                 expect(body.comment.body).toBe("Awesome it is");
               });
           });
-          test("status: 409 - an invalid username", () => {
+          test("status: 404 - an invalid username", () => {
             return request(app)
               .post("/api/articles/1/comments")
               .send({ username: "invalidUsername", body: "Awesome it is" })
-              .expect(409)
+              .expect(404)
               .then(({ body }) => {
-                expect(body.msg).toBe("Conflict");
+                expect(body.msg).toBe("not found");
               });
           });
           test("status: 400 - empty body input", () => {
@@ -267,6 +267,24 @@ describe("app", () => {
               .expect(400)
               .then(({ body }) => {
                 expect(body.msg).toBe("Bad request");
+              });
+          });
+          test("status: 400 - empty username input", () => {
+            return request(app)
+              .post("/api/articles/1/comments")
+              .send({ username: "", body: "something something" })
+              .expect(400)
+              .then(({ body }) => {
+                expect(body.msg).toBe("Bad request");
+              });
+          });
+          test("status: 400 - article_id is valid but does not exist", () => {
+            return request(app)
+              .post("/api/articles/1000/comments")
+              .send({ username: "lurker", body: "something something" })
+              .expect(404)
+              .then(({ body }) => {
+                expect(body.msg).toBe("not found");
               });
           });
         });
@@ -319,6 +337,14 @@ describe("app", () => {
                 });
               });
           });
+          test("status: 200 - empty array is returned if article exists but there are no comments", () => {
+            return request(app)
+              .get("/api/articles/2/comments")
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.comments).toEqual([]);
+              });
+          });
           test("status: 400 - invalid article_id given", () => {
             return request(app)
               .get("/api/articles/invalid_id/comments")
@@ -332,7 +358,7 @@ describe("app", () => {
               .get("/api/articles/1000/comments")
               .expect(404)
               .then(({ body }) => {
-                expect(body.msg).toBe("Comments not found");
+                expect(body.msg).toBe("Article not found");
               });
           });
         });
@@ -395,6 +421,17 @@ describe("app", () => {
             });
         });
         test("status: 200 - articles can be sort_by any valid article key", () => {
+          return request(app)
+            .get("/api/articles?sort_by=comment_count")
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.articles).toBeSortedBy("comment_count", {
+                coerce: true,
+                descending: true,
+              });
+            });
+        });
+        test("status: 200 - articles can be sort_by votes key", () => {
           return request(app)
             .get("/api/articles?sort_by=comment_count")
             .expect(200)
@@ -482,13 +519,13 @@ describe("app", () => {
               expect(body.comment.votes).toBe(17);
             });
         });
-        test("status: 200 - inc_votes is empty", () => {
+        test("status: 400 - inc_votes is empty", () => {
           return request(app)
             .patch("/api/comments/1")
             .send({})
-            .expect(200)
+            .expect(400)
             .then(({ body }) => {
-              expect(body.comment.votes).toBe(17);
+              expect(body.msg).toBe("Bad request");
             });
         });
         test("status: 404 - non existent comment_id", () => {
@@ -510,7 +547,7 @@ describe("app", () => {
             });
         });
       });
-      describe.only("DELETE", () => {
+      describe("DELETE", () => {
         test("status: 204 - removes a comment from the database", () => {
           return request(app).del("/api/comments/1").expect(204);
         });
@@ -520,6 +557,14 @@ describe("app", () => {
             .expect(400)
             .then(({ body }) => {
               expect(body.msg).toBe("Bad request");
+            });
+        });
+        test("status: 404 - comment_id is valid but does not exist", () => {
+          return request(app)
+            .del("/api/comments/1000")
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).toBe("Comment not found");
             });
         });
       });

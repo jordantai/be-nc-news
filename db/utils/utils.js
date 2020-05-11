@@ -3,8 +3,7 @@ exports.formatDates = (list) => {
     if (Object.keys(date).length > 0) {
       let { created_at: newDate, ...restOfKeys } = date;
       newDate = new Date(date["created_at"]);
-      const formatDate = newDate.toLocaleString("en-GB", { hour12: false });
-      return { created_at: formatDate, ...restOfKeys };
+      return { created_at: newDate, ...restOfKeys };
     } else {
       return {};
     }

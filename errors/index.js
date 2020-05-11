@@ -12,11 +12,11 @@ exports.handlePSQLErrors = (err, req, res, next) => {
   // } else next(err);
 
   const badRequestCodes = ["42703", "22P02"];
-  const conflictRequestCodes = ["23503"];
+  const foreignKey404 = ["23503"];
   if (badRequestCodes.includes(err.code)) {
     res.status(400).send({ msg: "Bad request" });
-  } else if (conflictRequestCodes.includes(err.code)) {
-    res.status(409).send({ msg: "Conflict" });
+  } else if (foreignKey404.includes(err.code)) {
+    res.status(404).send({ msg: "not found" });
   } else {
     next(err);
   }

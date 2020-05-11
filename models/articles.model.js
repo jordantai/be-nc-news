@@ -5,7 +5,7 @@ exports.fetchArticleByArticleId = (article_id) => {
     .select("articles.*")
     .count("comments.article_id", { as: "comment_count" })
     .from("articles")
-    .join("comments", "articles.article_id", "=", "comments.article_id")
+    .leftJoin("comments", "articles.article_id", "=", "comments.article_id")
     .where("articles.article_id", article_id)
     .groupBy("articles.article_id")
     .then((article) => {
