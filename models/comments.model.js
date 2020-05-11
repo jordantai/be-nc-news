@@ -27,7 +27,7 @@ exports.fetchCommentsByArticleId = (
 };
 
 exports.updateCommentVotes = (comment_id, inc_votes) => {
-  if (!inc_votes) return Promise.reject({ status: 400, msg: "Bad request" });
+  // if (!inc_votes) return Promise.reject({ status: 400, msg: "Bad request" });
   return connection("comments")
     .increment("votes", inc_votes)
     .where("comment_id", comment_id)

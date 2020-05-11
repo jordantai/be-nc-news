@@ -1,14 +1,7 @@
 You are now connected to database "nc_news_test" as user "jordan".
- article_id |                     title                     |                          body                          | votes | topic |    author     |       created_at       | comment_count 
-------------+-----------------------------------------------+--------------------------------------------------------+-------+-------+---------------+------------------------+---------------
-          6 | A                                             | Delicious tin of cat food                              |     0 | mitch | icellusedkars | 1998-11-20 12:21:54+00 |             1
-          9 | They're not exactly dogs, are they?           | Well? Think about it.                                  |     0 | mitch | butter_bridge | 1986-11-23 12:21:54+00 |             2
-          1 | Living in the shadow of a great man           | I find this existence challenging                      |   100 | mitch | butter_bridge | 2018-11-15 12:21:54+00 |            13
-          5 | UNCOVERED: catspiracy to bring down democracy | Bastet walks amongst us, and the cats are taking arms! |     0 | cats  | rogersop      | 2002-11-19 12:21:54+00 |             2
-(4 rows)
-
- exists 
---------
- t
+UPDATE 1
+ comment_id |    author     | article_id | votes |       created_at       |                                       body                                        
+------------+---------------+------------+-------+------------------------+-----------------------------------------------------------------------------------
+          1 | butter_bridge |          9 |    18 | 2017-11-22 12:36:03+00 | Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!
 (1 row)
 

@@ -447,7 +447,7 @@ describe("app", () => {
         });
       });
     });
-    describe.only("/comments/:comment_id", () => {
+    describe("/comments/:comment_id", () => {
       describe("PATCH", () => {
         test("status: 200 - updates number of votes for a comment", () => {
           return request(app)
@@ -455,8 +455,49 @@ describe("app", () => {
             .send({ inc_votes: 1 })
             .expect(200)
             .then(({ body }) => {
-              expect(body.comment.votes).toBe(101);
+              expect(body.comment.votes).toBe(17);
             });
+        });
+        test("status: 200 - inc_votes is empty", () => {
+          return request(app)
+            .patch("/api/comments/1")
+            .send({})
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.comment.votes).toBe(17);
+            });
+        });
+        test("status: 404 - non existent comment_id", () => {
+          return request(app)
+            .patch("/api/comments/1000")
+            .send({ inc_votes: 1 })
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).toBe("Comment not found");
+            });
+        });
+        test("status: 400 - invalid comment_id", () => {
+          return request(app)
+            .patch("/api/comments/notAnInt")
+            .send({ inc_votes: 1 })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).toBe("Bad request");
+            });
+        });
+      });
+      describe("INVALID METHODS", () => {
+        test("not allowed methods", () => {
+          const invalidMethods = ["get", "post", "put", "delete"];
+          const requests = invalidMethods.map((method) => {
+            return request(app)
+              [method]("/api/comments/1")
+              .expect(405)
+              .then(({ body }) => {
+                expect(body.msg).toBe("Method not allowed");
+              });
+          });
+          return Promise.all(requests);
         });
       });
     });
