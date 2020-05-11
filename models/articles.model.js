@@ -52,13 +52,3 @@ exports.fetchArticles = (
       return articles;
     });
 };
-
-// exports.checkAuthorExists = (author) => {
-//   return connection
-//     .select("users.username")
-//     .from("users")
-//     .where("users.username", author)
-//     .then((user) => {
-//       return user.length;
-//     });
-// };

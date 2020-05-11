@@ -327,6 +327,14 @@ describe("app", () => {
                 expect(body.msg).toBe("Bad request");
               });
           });
+          test("status: 404 - article_id does not exist", () => {
+            return request(app)
+              .get("/api/articles/1000/comments")
+              .expect(404)
+              .then(({ body }) => {
+                expect(body.msg).toBe("Comments not found");
+              });
+          });
         });
         describe("INVALID METHODS", () => {
           test("not allowed methods", () => {
@@ -437,6 +445,22 @@ describe("app", () => {
               expect(body.articles).toEqual([]);
             });
         });
+        test("status: 200 - respond with empty array if topic exists but has no articles", () => {
+          return request(app)
+            .get("/api/articles?topic=paper")
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.articles).toEqual([]);
+            });
+        });
+        test("status: 404 - non-existent author", () => {
+          return request(app)
+            .get("/api/articles?author=doesNotExist")
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).toEqual("User not found");
+            });
+        });
         test("status: 404 - non-existent topic", () => {
           return request(app)
             .get("/api/articles?topic=does-not-exist")
@@ -486,9 +510,14 @@ describe("app", () => {
             });
         });
       });
+      describe.only("DELETE", () => {
+        test("status: 204 - removes a comment from the database", () => {
+          return request(app).del("/api/comments/1").expect(204);
+        });
+      });
       describe("INVALID METHODS", () => {
         test("not allowed methods", () => {
-          const invalidMethods = ["get", "post", "put", "delete"];
+          const invalidMethods = ["get", "post", "put"];
           const requests = invalidMethods.map((method) => {
             return request(app)
               [method]("/api/comments/1")

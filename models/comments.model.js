@@ -22,6 +22,8 @@ exports.fetchCommentsByArticleId = (
     .where("article_id", article_id)
     .orderBy(sort_by, order)
     .then((comments) => {
+      if (comments.length === 0)
+        return Promise.reject({ status: 404, msg: "Comments not found" });
       return comments;
     });
 };
@@ -37,4 +39,8 @@ exports.updateCommentVotes = (comment_id, inc_votes) => {
         return Promise.reject({ status: 404, msg: "Comment not found" });
       return comment[0];
     });
+};
+
+exports.removeCommentById = (comment_id) => {
+  return connection("comments").where("comment_id", comment_id).del();
 };
