@@ -10,18 +10,108 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all topics",
+    "description": "serves an array of article objects",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
         {
+          "article_id": 1,
           "title": "Seafood substitutions are increasing",
           "topic": "cooking",
           "author": "weegembump",
           "body": "Text from the article..",
-          "created_at": 1527695953341
+          "created_at": 1527695953341,
+          "votes": 0,
+          "comment_count": "10"
         }
       ]
     }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves an article object",
+    "queries": [],
+    "exampleResponse": {
+      "articles": [
+        {
+          "article_id": 1,
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "body": "Text from the article..",
+          "created_at": 1527695953341,
+          "votes": 0,
+          "comment_count": "10"
+        }
+      ]
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "serves an updated article object",
+    "queries": [],
+    "exampleRequestBody": { "inc_votes": 1 },
+    "exampleResponse": {
+      "article": {
+        "article_id": 1,
+        "title": "Seafood substitutions are increasing",
+        "topic": "cooking",
+        "author": "weegembump",
+        "body": "Text from the article..",
+        "created_at": 1527695953341,
+        "votes": 1,
+        "comment_count": "10"
+      }
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "serves an updated article object",
+    "queries": [],
+    "exampleRequestBody": {
+      "username": "userone",
+      "body": "This is a comment"
+    },
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 1,
+        "author": "userone",
+        "body": "This is a comment",
+        "created_at": 1527695953341,
+        "votes": 0
+      }
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves an array of comment objects",
+    "queries": ["sort_by", "order"],
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 1,
+          "author": "userone",
+          "body": "This is a comment",
+          "created_at": 1527695953341,
+          "votes": 0
+        }
+      ]
+    }
+  },
+  "PATCH /api/comments/:comment_id": {
+    "description": "serves an updated comment object",
+    "queries": [],
+    "exampleRequestBody": {
+      "inc_votes": 1
+    },
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 1,
+        "author": "userone",
+        "body": "This is a comment",
+        "created_at": 1527695953341,
+        "votes": 1
+      }
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes comment from database",
+    "queries": []
   }
 }

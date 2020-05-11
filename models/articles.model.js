@@ -34,7 +34,6 @@ exports.fetchArticles = (
   author,
   topic
 ) => {
-  // need all columns from articles table plus comment count
   return connection
     .select("articles.*")
     .count("comments.article_id", { as: "comment_count" })
@@ -47,8 +46,6 @@ exports.fetchArticles = (
       if (topic) query.where("articles.topic", topic);
     })
     .then((articles) => {
-      // if (articles.length === 0)
-      //   return Promise.reject({ status: 404, msg: "Article not found" });
       return articles;
     });
 };

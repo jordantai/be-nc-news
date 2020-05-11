@@ -4,7 +4,7 @@ const {
   updateCommentVotes,
   removeCommentById,
 } = require("../models/comments.model");
-const { fetchArticleByArticleId} = require("../models/articles.model");
+const { fetchArticleByArticleId } = require("../models/articles.model");
 
 exports.postCommentByArticleId = (req, res, next) => {
   const { username, body } = req.body;
@@ -20,8 +20,7 @@ exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
   const { sort_by, order } = req.query;
   const queries = [fetchCommentsByArticleId(article_id, sort_by, order)];
-  if(article_id) queries.push(fetchArticleByArticleId(article_id));
-  // fetchCommentsByArticleId(article_id, sort_by, order)
+  if (article_id) queries.push(fetchArticleByArticleId(article_id));
   Promise.all(queries)
     .then(([comments]) => {
       res.status(200).send({ comments });
