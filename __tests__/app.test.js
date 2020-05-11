@@ -437,12 +437,25 @@ describe("app", () => {
               expect(body.articles).toEqual([]);
             });
         });
-        test.only("status: 404 - non-existent topic", () => {
+        test("status: 404 - non-existent topic", () => {
           return request(app)
             .get("/api/articles?topic=does-not-exist")
             .expect(404)
             .then(({ body }) => {
               expect(body.msg).toBe("Topic not found");
+            });
+        });
+      });
+    });
+    describe.only("/comments/:comment_id", () => {
+      describe("PATCH", () => {
+        test("status: 200 - updates number of votes for a comment", () => {
+          return request(app)
+            .patch("/api/comments/1")
+            .send({ inc_votes: 1 })
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.comment.votes).toBe(101);
             });
         });
       });

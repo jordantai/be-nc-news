@@ -47,8 +47,8 @@ exports.fetchArticles = (
       if (topic) query.where("articles.topic", topic);
     })
     .then((articles) => {
-      if (articles.length === 0)
-        return Promise.reject({ status: 404, msg: "Article not found" });
+      // if (articles.length === 0)
+      //   return Promise.reject({ status: 404, msg: "Article not found" });
       return articles;
     });
 };
