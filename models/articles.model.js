@@ -28,7 +28,12 @@ exports.updateArticleVotes = (article_id, inc_votes) => {
     });
 };
 
-exports.fetchArticles = (sort_by = "created_at", order = "desc", author, topic) => {
+exports.fetchArticles = (
+  sort_by = "created_at",
+  order = "desc",
+  author,
+  topic
+) => {
   // need all columns from articles table plus comment count
   return connection
     .select("articles.*")
@@ -38,12 +43,22 @@ exports.fetchArticles = (sort_by = "created_at", order = "desc", author, topic) 
     .groupBy("articles.article_id")
     .orderBy(sort_by, order)
     .modify((query) => {
-      if(author) query.where("articles.author", author);
-      if(topic) query.where("articles.topic", topic);
+      if (author) query.where("articles.author", author);
+      if (topic) query.where("articles.topic", topic);
     })
     .then((articles) => {
-      // if (article.length === 0)
-      //   return Promise.reject({ status: 404, msg: "Article not found" });
+      if (articles.length === 0)
+        return Promise.reject({ status: 404, msg: "Article not found" });
       return articles;
     });
 };
+
+// exports.checkAuthorExists = (author) => {
+//   return connection
+//     .select("users.username")
+//     .from("users")
+//     .where("users.username", author)
+//     .then((user) => {
+//       return user.length;
+//     });
+// };

@@ -344,7 +344,7 @@ describe("app", () => {
         });
       });
     });
-    describe.only("/articles", () => {
+    describe("/articles", () => {
       describe("GET", () => {
         test("status: 200 - returns an array of article objects", () => {
           return request(app)
@@ -359,35 +359,49 @@ describe("app", () => {
           return request(app)
             .get("/api/articles")
             .expect(200)
-            .then(({body})=> {
+            .then(({ body }) => {
               body.articles.forEach((article) => {
                 expect(Object.keys(article)).toEqual(
-                  expect.arrayContaining(["article_id", "title", "body", "votes", "topic", "author", "created_at", "comment_count"])
+                  expect.arrayContaining([
+                    "article_id",
+                    "title",
+                    "body",
+                    "votes",
+                    "topic",
+                    "author",
+                    "created_at",
+                    "comment_count",
+                  ])
                 );
               });
-          });
+            });
         });
         test("status: 200 - articles are sorted_by date by default", () => {
           return request(app)
             .get("/api/articles")
             .expect(200)
-            .then(({body}) => {
-              expect(body.articles).toBeSortedBy("created_at", {descending: true});
+            .then(({ body }) => {
+              expect(body.articles).toBeSortedBy("created_at", {
+                descending: true,
+              });
             });
         });
         test("status: 200 - articles can be sort_by any valid article key", () => {
           return request(app)
             .get("/api/articles?sort_by=comment_count")
             .expect(200)
-            .then(({body}) => {
-              expect(body.articles).toBeSortedBy("comment_count", {coerce: true, descending: true});
+            .then(({ body }) => {
+              expect(body.articles).toBeSortedBy("comment_count", {
+                coerce: true,
+                descending: true,
+              });
             });
         });
         test("status: 200 - articles can be ordered either asc or desc, default is desc", () => {
           return request(app)
             .get("/api/articles?sort_by=votes&&order=asc")
             .expect(200)
-            .then(({body}) => {
+            .then(({ body }) => {
               expect(body.articles).toBeSortedBy("votes");
             });
         });
@@ -395,7 +409,7 @@ describe("app", () => {
           return request(app)
             .get("/api/articles?author=rogersop")
             .expect(200)
-            .then(({body}) => {
+            .then(({ body }) => {
               let author = "";
               body.articles.forEach((article) => {
                 author = article.author;
@@ -407,12 +421,28 @@ describe("app", () => {
           return request(app)
             .get("/api/articles?topic=mitch")
             .expect(200)
-            .then(({body}) => {
+            .then(({ body }) => {
               let topic = "";
               body.articles.forEach((article) => {
                 topic = article.topic;
               });
               expect(topic).toBe("mitch");
+            });
+        });
+        test("status: 200 - respond with empty array if author exists but has no articles", () => {
+          return request(app)
+            .get("/api/articles?author=lurker")
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.articles).toEqual([]);
+            });
+        });
+        test.only("status: 404 - non-existent topic", () => {
+          return request(app)
+            .get("/api/articles?topic=does-not-exist")
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).toBe("Topic not found");
             });
         });
       });

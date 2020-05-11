@@ -9,3 +9,5 @@ FROM articles
 JOIN comments
 ON articles.article_id = comments.article_id
 GROUP BY articles.article_id;
+
+SELECT EXISTS(SELECT * FROM users WHERE username = 'lurker');

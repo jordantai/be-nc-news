@@ -7,3 +7,8 @@ You are now connected to database "nc_news_test" as user "jordan".
           5 | UNCOVERED: catspiracy to bring down democracy | Bastet walks amongst us, and the cats are taking arms! |     0 | cats  | rogersop      | 2002-11-19 12:21:54+00 |             2
 (4 rows)
 
+ exists 
+--------
+ t
+(1 row)
+
